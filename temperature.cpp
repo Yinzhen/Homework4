@@ -57,12 +57,6 @@ void copyT(double **T_p, double **T_c, int nx){
 	}
 }
 
-void deleteT(double ** T, int nx){
-	for(int i = 0; i < nx+2; i ++){
-		delete [] T[i];
-	}
-	delete [] T;
-}
 
 
 
