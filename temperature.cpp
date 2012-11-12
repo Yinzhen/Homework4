@@ -10,11 +10,11 @@ using std::endl;
 
 double ** new_Temperature(int nx, double dx){
 	double ** T;
-	T = new double *[nx+1];
-	for(int i = 0; i < nx+1; i ++){
+	T = new double *[nx+2];
+	for(int i = 0; i < nx+2; i ++){
 		T[i] = new double [nx];
 	}
-	for(int i = 1; i < nx+1; i ++){
+	for(int i = 1; i < nx+2; i ++){
 		for(int j = 0; j < nx; j ++){
 			if(j == 0){
 				T[i][j] = pow(cos((i-1)*dx), 2);
