@@ -22,6 +22,7 @@ int main(int argc, char *argv[]){
     const double delta = 0.25;
     const int n = 2*nx*nx;
     const double dx = pi/nx;
+    int t, i, j;
     int chunk;
 
 
@@ -32,10 +33,10 @@ int main(int argc, char *argv[]){
     double ** T_p = new_Temperature(nx, dx);
 
     chunk = 100;
-    #pragma omp parallel for shared(T_p, T_c, nx) private(i, j) schedule(static,chunk)
-    for(int t = 0; t < n; t++){
-    	for(int i = 1; i < nx/2+2; i++){
-    		for(int j = 1; j < nx-1; j++){
+    #pragma omp parallel for shared(T_p, T_c) private(i, j) schedule(static,chunk) num_threads(nthreads)
+    for(t = 0; t < n; t++){
+    	for(i = 1; i < nx/2+2; i++){
+    		for(j = 1; j < nx-1; j++){
 				T_c[i][j] = delta*(T_p[i-1][j] +T_p[i+1][j]+T_p[i][j-1]+T_p[i][j+1]); 
                 T_c[nx-i+2][j] = T_c[i][j]; 		
     		}
