@@ -25,7 +25,7 @@ int main(int argc, char *argv[]){
     file.append("_output");
 
     double ** T_c = new_Temperature(nx, dx);
-    double ** T_p = new_Temperature(nx, dx);;
+    double ** T_p = new_Temperature(nx, dx);
     
 
     for(int t = 0; t < n; t++){
