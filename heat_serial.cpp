@@ -29,13 +29,20 @@ int main(int argc, char *argv[]){
     
 
     for(int t = 0; t < n; t++){
-    	for(int i = 1; i < nx/2+2; i++){
+    	for(int i = 1; i < nx+1; i++){
     		for(int j = 1; j < nx-1; j++){
-				T_c[i][j] = delta*(T_p[i-1][j] +T_p[i+1][j]+T_p[i][j-1]+T_p[i][j+1]); 
-                T_c[nx-i+2][j] = T_c[i][j]; 		
+				T_c[i][j] = delta*(T_p[i-1][j] +T_p[i+1][j]+T_p[i][j-1]+T_p[i][j+1]); 		
     		}
     	}
-    	copyT(T_p, T_c, nx);      
+    	for(int i = 1; i < nx+1; i ++){
+            for(int j = 0; j < nx; j++){
+                T_p[i][j] = T_c[i][j];
+            }
+        }
+        for(int j = 0; j < nx; j++){
+            T_p[0][j] = T_c[nx][j];
+            T_p[nx+1][j] = T_c[1][j];
+        }      
     }
 
 	print2file(T_c, nx, file);
