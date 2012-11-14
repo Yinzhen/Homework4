@@ -10,17 +10,17 @@ using std::endl;
 
 double ** new_Temperature(int nx, double dx){
 	double ** T;
-	T = new double *[nx+2];
-	for(int i = 0; i < nx+2; i ++){
+	T = new double *[nx];
+	for(int i = 0; i < nx; i ++){
 		T[i] = new double [nx];
 	}
-	for(int i = 1; i < nx+2; i ++){
+	for(int i = 0; i < nx; i ++){
 		for(int j = 0; j < nx; j ++){
 			if(j == 0){
-				T[i][j] = pow(cos((i-1)*dx), 2);
+				T[i][j] = pow(cos(i*dx), 2);
 			}
 			else if(j == nx-1){
-				T[i][j] = pow(sin((i-1)*dx), 2);
+				T[i][j] = pow(sin(i*dx), 2);
 			}
 			else{
 				T[i][j] = 0;
@@ -35,7 +35,7 @@ void print2file(double **T, int nx, string file){
 	output.open(file.c_str());
   	if (output.is_open()){
   		for (int j = nx-1; j >= 0; j--){
-  			for (int i = 1; i < nx+1; i++){
+  			for (int i = 0; i < nx; i++){
   				output <<T[i][j]<<" ";
   			}
   			output<<"\n";
@@ -46,16 +46,6 @@ void print2file(double **T, int nx, string file){
 }
 
 
-void copyT(double **T_p, double **T_c, int nx){
-	for(int i = 1; i < nx+1; i ++){
-		for(int j = 0; j < nx; j++){
-			T_p[i][j] = T_c[i][j];
-		}
-	}
-	for(int j = 0; j < nx; j++){
-		T_p[0][j] = T_c[nx][j];
-	}
-}
 
 
 
