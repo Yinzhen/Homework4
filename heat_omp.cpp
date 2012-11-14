@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
     const double delta = 0.25;
     const int n = 2*nx*nx;
     const double dx = pi/nx;
-    int t, i;
+    int t, i, j;
     int chunk;
     chunk = 128/4;
 
@@ -35,30 +35,28 @@ int main(int argc, char *argv[]){
 
 
 
-
-
-
+    omp_set_num_threads(4);
     for(t = 0; t < n; t++){ 
-        omp_set_num_threads(1); 
-        #pragma omp parallel
-        {
-        int thread = omp_get_thread_num();
-    	for(i = 1; i < nx+1; i++){
-            int j;
-    		for(j = 1; j < nx-1; j++){
-				T_c[i][j] = delta*(T_p[i-1][j] +T_p[i+1][j]+T_p[i][j-1]+T_p[i][j+1]); 		
-    		}
-    	}
+        #pragma omp parallel for default(shared) private(i,j) schedule(dynamic) 
+    	for(i = 0; i < nx; i++){
+            for(j = 1; j < nx-1; j++){
+                if(i == 0){
+                    T_c[i][j] = delta*(T_p[nx-1][j] +T_p[i+1][j]+T_p[i][j-1]+T_p[i][j+1]);
+                }
+                else if(i == nx -1){
+                    T_c[i][j] = delta*(T_p[i-1][j] +T_p[0][j]+T_p[i][j-1]+T_p[i][j+1]);
+                }
+                else{
+                    T_c[i][j] = delta*(T_p[i-1][j] +T_p[i+1][j]+T_p[i][j-1]+T_p[i][j+1]);
+                }
+            }
         }
-    	for(int i = 1; i < nx+1; i ++){
+        #pragma omp parallel for default(shared) private(i,j) schedule(dynamic)
+    	for(int i = 0; i < nx; i ++){
             for(int j = 0; j < nx; j++){
                 T_p[i][j] = T_c[i][j];
             }
-        }
-        for(int j = 0; j < nx; j++){
-            T_p[0][j] = T_c[nx][j];
-            T_p[nx+1][j] = T_c[1][j];
-        } 
+        }  
     }
 
 
@@ -67,7 +65,7 @@ int main(int argc, char *argv[]){
 
 	print2file(T_c, nx, file);
 
-    for(int i = 0; i < nx+2; i ++){
+    for(int i = 0; i < nx; i ++){
         delete [] T_c[i];
         delete [] T_p[i];
     }
