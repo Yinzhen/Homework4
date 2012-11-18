@@ -10,14 +10,14 @@ using namespace std;
 
 
 int main(int argc, char *argv[]){
-	if (argc != 2) {
+	if (argc != 3) {
     	printf("USAGE: %s <nx> <nthreads>\n", argv[0]);
     	exit(1);
     }
 
     double start_time = omp_get_wtime();
     const int nx = atoi(argv[1]);
-    //const int nthreads = atoi(argv[2]);
+    const int nthreads = atoi(argv[2]);
     const double pi = 3.1415926535897;
     const double delta = 0.25;
     const int n = 2*nx*nx;
@@ -35,9 +35,10 @@ int main(int argc, char *argv[]){
 
 
 
-    omp_set_num_threads(4);
+    omp_set_num_threads(nthreads);
+    #pragma omp parallel default(none) shared(T_c, T_p) private(i, j, t)
     for(t = 0; t < n; t++){ 
-        #pragma omp parallel for default(shared) private(i,j) schedule(dynamic) 
+        #pragma omp for nowait 
     	for(i = 0; i < nx; i++){
             for(j = 1; j < nx-1; j++){
                 if(i == 0){
@@ -51,7 +52,10 @@ int main(int argc, char *argv[]){
                 }
             }
         }
-        #pragma omp parallel for default(shared) private(i,j) schedule(dynamic)
+
+        #pragma omp barrier
+
+        #pragma omp for nowait
     	for(int i = 0; i < nx; i ++){
             for(int j = 0; j < nx; j++){
                 T_p[i][j] = T_c[i][j];
