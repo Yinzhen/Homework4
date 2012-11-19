@@ -20,6 +20,7 @@ heat_mpi : $(objects2)
 	$(MPICC) -O3 -o $@ $^
 
 clean:
+	$(RM) heat_serial heat_omp heat_mpi	
 	$(RM) *.o
 	$(RM) .depend
 	$(RM) *_output
