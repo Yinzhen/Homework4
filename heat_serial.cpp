@@ -1,9 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <time.h>
-#include <string.h>
 #include "temperature.h"
 using namespace std;
 
@@ -17,10 +11,11 @@ int main(int argc, char *argv[]){
     }
 
     const int nx = atoi(argv[1]);
-    const double pi = 3.1415926535897;
+    const double pi = acos(0)*2;
     const double delta = 0.25;
     const int n = 2*nx*nx;
     const double dx = pi/nx;
+    double v_sum = 0;
     string file = argv[0];
     file.append(argv[1]);
     file.append("_output");
@@ -50,7 +45,14 @@ int main(int argc, char *argv[]){
         }    
     }
 
+    clock_t end_time = clock();
+
 	print2file(T_c, nx, file);
+    for(int i = 0; i < nx; i ++){
+        for(int j = 0; j < nx; j++){
+            v_sum += T_c[i][j];
+        }
+    }
 
     for(int i = 0; i < nx; i ++){
         delete [] T_c[i];
@@ -59,7 +61,7 @@ int main(int argc, char *argv[]){
     delete [] T_c;
     delete [] T_p;
 
-    clock_t end_time = clock();
+    cout << "Volume average for "<<nx<<" x "<<nx<<" "<<v_sum/nx/nx<<endl;
     cout << "Running time is: " << static_cast<double>(end_time-start_time)/CLOCKS_PER_SEC << "s" << endl;
     return 0;
 }

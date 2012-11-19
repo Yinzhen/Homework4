@@ -1,11 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <time.h>
 #include <omp.h>
 #include "temperature.h"
-using namespace std;
+
 
 
 
@@ -18,10 +13,11 @@ int main(int argc, char *argv[]){
     double start_time = omp_get_wtime();
     const int nx = atoi(argv[1]);
     const int nthreads = atoi(argv[2]);
-    const double pi = 3.1415926535897;
+    const double pi = acos(0)*2;
     const double delta = 0.25;
     const int n = 2*nx*nx;
     const double dx = pi/nx;
+    double v_sum = 0;
     int t, i, j;
     int chunk;
     chunk = 128/4;
@@ -64,10 +60,14 @@ int main(int argc, char *argv[]){
     }
 
 
-
-
+    double stop_time = omp_get_wtime();
 
 	print2file(T_c, nx, file);
+    for(int i = 0; i < nx; i ++){
+        for(int j = 0; j < nx; j++){
+            v_sum += T_c[i][j];
+        }
+    }
 
     for(int i = 0; i < nx; i ++){
         delete [] T_c[i];
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
     delete [] T_c;
     delete [] T_p;
 
-    double stop_time = omp_get_wtime();
+    cout << "Volume average for "<<nx<<" x "<<nx<<" "<<v_sum/nx/nx<<endl;
     cout << "Running time is: " << stop_time - start_time << "s" << endl;
     return 0;
 }

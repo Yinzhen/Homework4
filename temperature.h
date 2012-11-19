@@ -1,7 +1,11 @@
 #ifndef TEMPERATURE_H_
 #define TEMPERATURE_H_
 #include <string>
-using std::string;
+#include <iostream>
+#include <fstream>
+#include <time.h>
+#include <math.h>
+using namespace std;
 
 double ** new_Temperature(int nx, double dx);
 

@@ -1,12 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <time.h>
 #include <mpi.h>
-#include <math.h>
 #include "temperature.h"
-using namespace std;
 
 int main(int argc, char *argv[]){
     if (argc != 2) {
@@ -118,12 +111,14 @@ int main(int argc, char *argv[]){
     else{
         double receive_T[nx*interval];
         double ** T = new double*[nx];
+        double v_sum = 0;
         for(int i = 0; i < nx; i++){
             T[i] = new double [nx];
         }
         for(int i = 1; i < interval + 1; i++){
             for(int j = 0; j < nx; j ++){
                 T[i-1][j] = T_c[i][j];
+                v_sum += T_c[i][j];
             }
         }
         for(int i = 1; i < n_tsk; i++){
@@ -131,10 +126,12 @@ int main(int argc, char *argv[]){
             for(int j = 0; j < interval; j++){      
                 for(int k = 0; k < nx; k ++){
                     T[i*interval+j][k] = receive_T[j*nx+k];
+                    v_sum += receive_T[j*nx+k];
                 }
             }
         }
         double time_end =  MPI_Wtime();
+        cout << "Volume average for "<<nx<<" x "<<nx<<" "<<v_sum/nx/nx<<endl;
         cout <<"Running time is "<<time_end-time_start<< "s" <<endl;
         print2file(T, nx, file);
         for(int i = 0; i < nx; i++){

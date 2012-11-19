@@ -1,12 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <math.h>
 #include "temperature.h"
-
-using std::ofstream;
-using std::cout;
-using std::endl;
-
 
 double ** new_Temperature(int nx, double dx){
 	double ** T;
